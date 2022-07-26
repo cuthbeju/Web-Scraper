@@ -12,5 +12,6 @@ The program will automatically send back the cover image and summary once the re
 
 UML Diagram:
 
-![web-scraper-uml](https://user-images.githubusercontent.com/91505649/180928844-752ca84c-6a8e-4ebb-9d77-fbe161693415.png)
+![web-scraper-uml (1)](https://user-images.githubusercontent.com/91505649/180929245-01a5e3c7-90c2-447b-bb3f-5183264b85e8.png)
+
 
