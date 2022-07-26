@@ -9,3 +9,7 @@ To request data, run 'node client.js' followed by the URL of the comic that you 
 How to Receive Data:
 
 The program will automatically send back the cover image and summary once the request has been made.
+
+UML Diagram:
+
+![web-scraper-uml](https://user-images.githubusercontent.com/91505649/180920602-6ab9214c-0060-41fe-b9cd-2f481108ae8b.png)
