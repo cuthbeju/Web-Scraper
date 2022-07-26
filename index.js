@@ -4,14 +4,15 @@ const cheerio = require('cheerio');
 const express = require('express');
 const amqplib = require('amqplib');
 
-const queueName = 'rpc_queue';
-
 const app = express();
 
-function scrape(url) {
-    axios(url)
-    .then(response => {
-        const html = response.data
+const queueName = 'rpc_queue';
+
+//scrapes image and book summary from url
+const scrape = async (url) => {
+    try {
+        const response = await axios.get(url)
+        const html = await response.data
         const $ = cheerio.load(html)
         articles = []
         const sum = $('.css-901oao.css-cens5h.r-zdkpiq.r-1wbh5a2.r-1qhq223.r-1vr2v4v.r-adoza8.r-11kvyqd.r-dnmrzs.r-1ez4vuq.r-1iln25a', html)
@@ -23,9 +24,12 @@ function scrape(url) {
                 summary 
             }
         )
-        console.log(JSON.stringify(articles));
-        })
-    .catch(error => console.log(error))
+        var msg = JSON.stringify(articles)
+        return msg;
+
+    } catch (error) {
+        console.log(error)
+    }
 }
 
 const processTask = async () => {
@@ -33,22 +37,26 @@ const processTask = async () => {
     const channel = await connection.createChannel();
     await channel.assertQueue(queueName, {durable: false});
     channel.prefetch();
-    console.log('[x] Awaiting RPC requests');
+    console.log(' [x] Awaiting RPC requests');
 
     channel.consume(queueName, msg => {
         const url = (msg.content.toString());
-        console.log(url);
-        console.log('[.] Scraping for image and summary');
-        const toon = scrape(url);
+        console.log(' [.] Scraping for image and summary');
+        //call scrape function with url from rpc_queue
+        scrape(url).then(toon => {
+            var webtoon = toon
+            //send data to q
+            channel.sendToQueue(msg.properties.replyTo, Buffer.from(webtoon.toString()), {
+                correlationId: msg.properties.correlationId
+            });
+            console.log(' [.] Sending image and summary', toon);
+            //acknowledge msg 
+            channel.ack(msg);
+        })
 
-        channel.sendToQueue(msg.properties.replyTo, Buffer.from(toon), {
-            correlationId: msg.properties.correlationId
-        });
-        channel.ack(msg);
     }, {noAck: false})
 }
-//processTask();
-scrape("https://www.tappytoon.com/en/comics/i-adopted-the-male-lead");
+processTask();
 
 app.listen(PORT, () => console.log(`server running on PORT ${PORT}`))
 

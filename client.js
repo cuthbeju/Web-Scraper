@@ -10,23 +10,27 @@ if (args.length == 0) {
 }
 
 const url = args[0];
-const uuid = uuidvv4()
+const uuid = uuidvv4();
 
 const scrapeURL = async () => {
     const connection = await amqplib.connect('amqp://localhost');
     const channel = await connection.createChannel();
     const q = await channel.assertQueue('', {exclusive: true});
 
-    console.log(' [x] Requesting image and summary');
+    console.log(' [x] Requesting image and summary from:', url);
 
-    channel.sendToQueue('rpc_queue', Buffer.from(url), {
+    //send client request to rpc_queue
+    channel.sendToQueue('rpc_queue', Buffer.from(url.toString()), {
+        //send response back to q with a unique id
         replyTo: q.queue,
         correlationId: uuid
     });
 
+    //consume data from q
     channel.consume(q.queue, msg => {
+        //check that correlationId of data matches uuid
         if (msg.properties.correlationId == uuid){
-            console.log('[.] Got %s', msg.content.toString());
+            console.log(' [.] Received', msg.content.toString());
             setTimeout(() => {
                 connection.close();
                 process.exit(0);
