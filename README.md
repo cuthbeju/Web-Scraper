@@ -6,9 +6,11 @@ How to Request Data:
 
 Once the program is started (by running 'npm run start'), the server will be listening for requests. To request data, run 'node client.js' followed by the URL of the comic that you would like to request data from. (Ex: 'node client.js https://www.tappytoon.com/en/comics/i-adopted-the-male-lead').
 
+'client.js' represents the user's program that is sending a request to the microservice. To send a request directly through the program instead of through the command line, simply replace the definition of the url (which currently parses the command line for a url to send to the microservice). 
+
 How to Receive Data:
 
-The program will automatically send back the cover image and summary once the request has been made through a remote procedure call. 
+The program will automatically send back the cover image and summary in a JSON object once the request has been made through a remote procedure call. 
 
 UML Diagram:
 
