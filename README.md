@@ -1,10 +1,10 @@
 # Web-Scraper-Overview
 
-Program receives a URL for a specific comic on tappytoon.com, and then returns the related cover image and summary for that comic.
+Program receives a URL for a specific comic on tappytoon.com, and then returns the related cover image and summary for that comic. Type 'npm install' into the console to install all the required node modules and then type 'npm run start' to run the program. This service uses RabbitMQ as a communication pipe.
 
 How to Request Data:
 
-Once the program is started (by running 'npm run start'), the server will be listening for requests. To request data, run 'node client.js' followed by the URL of the comic that you would like to request data from. (Ex: 'node client.js https://www.tappytoon.com/en/comics/i-adopted-the-male-lead').
+Once the program is started, the server will be listening for requests. To request data, run 'node client.js' followed by the URL of the comic that you would like to request data from. (Ex: 'node client.js https://www.tappytoon.com/en/comics/i-adopted-the-male-lead').
 
 'client.js' represents the user's program that is sending a request to the microservice. To send a request directly through the program instead of through the command line, simply replace the definition of the url (which currently parses the command line for a url to send to the microservice). 
 
